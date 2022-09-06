@@ -1,0 +1,5 @@
+# this file lets you exclude specific files and folders from being copied over to the image
+env
+.dockerignore
+Dockerfile
+Dockerfile.prod
