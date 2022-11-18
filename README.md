@@ -14,6 +14,14 @@ fastapi-tdd-docker course from testdriven.io
 
 `docker-compose logs --follow --timestamps web `
 
+# run test with coverage
+
+`docker-compose exec web python -m pytest --cov="."`
+
+## and output html
+
+`docker-compose exec web python -m pytest --cov="." --cov-report html`
+
 # run linting
 
 `docker-compose exec web flake8 .`
