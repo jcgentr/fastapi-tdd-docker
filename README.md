@@ -2,6 +2,10 @@
 
 fastapi-tdd-docker course from testdriven.io
 
+# Test-Driven Development with FastAPI and Docker
+
+![Continuous Integration and Delivery](https://github.com/jcgentr/fastapi-tdd-docker/workflows/Continuous%20Integration%20and%20Delivery/badge.svg?branch=main)
+
 # docker-compose start app
 
 `docker-compose up -d --build`
