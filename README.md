@@ -16,7 +16,7 @@ fastapi-tdd-docker course from testdriven.io
 
 # docker-compose follow logs
 
-`docker-compose logs --follow --timestamps web `
+`docker-compose logs --follow --timestamps web`
 
 # run test with coverage
 
