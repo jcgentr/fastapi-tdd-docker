@@ -14,6 +14,11 @@ def test_create_summary(test_app, monkeypatch):
 
     monkeypatch.setattr(crud, "post", mock_post)
 
+    def mock_generate_summary(summary_id, url):
+        return None
+
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
     response = test_app.post("/summaries/", json=test_request_payload)
 
     assert response.status_code == 201
@@ -200,9 +205,7 @@ def test_update_summary(test_app, monkeypatch):
         ],
     ],
 )
-def test_update_summary_invalid(
-    test_app, monkeypatch, summary_id, payload, status_code, detail
-):
+def test_update_summary_invalid(test_app, monkeypatch, summary_id, payload, status_code, detail):
     async def mock_put(id, payload):
         return None
 

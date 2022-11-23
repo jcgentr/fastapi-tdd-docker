@@ -2,10 +2,18 @@ import logging
 
 import pytest
 
+from app.api import summaries
+
 log = logging.getLogger("uvicorn")
 
 
-def test_create_summary(test_app_with_db):
+def mock_generate_summary(summary_id, url):
+    return None
+
+
+def test_create_summary(test_app_with_db, monkeypatch):
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
     response = test_app_with_db.post("/summaries/", json={"url": "https://foo.bar"})
 
     assert response.status_code == 201
@@ -30,7 +38,9 @@ def test_create_summaries_invalid_json(test_app):
     assert response.json()["detail"][0]["msg"] == "URL scheme not permitted"
 
 
-def test_read_summary(test_app_with_db):
+def test_read_summary(test_app_with_db, monkeypatch):
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
     response = test_app_with_db.post("/summaries/", json={"url": "https://foo.bar"})
     summary_id = response.json()["id"]
 
@@ -40,7 +50,7 @@ def test_read_summary(test_app_with_db):
     response_dict = response.json()
     assert response_dict["id"] == summary_id
     assert response_dict["url"] == "https://foo.bar"
-    assert response_dict["summary"]
+    assert response_dict["summary"] == ""
     assert response_dict["created_at"]
 
 
@@ -64,7 +74,9 @@ def test_read_summary_incorrect_id(test_app_with_db):
     }
 
 
-def test_read_all_summaries(test_app_with_db):
+def test_read_all_summaries(test_app_with_db, monkeypatch):
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
     response = test_app_with_db.post("/summaries/", json={"url": "https://foo.bar"})
     summary_id = response.json()["id"]
     log.info(f"Summary id is {summary_id}")
@@ -76,7 +88,9 @@ def test_read_all_summaries(test_app_with_db):
     assert len(list(filter(lambda d: d["id"] == summary_id, response_list))) == 1
 
 
-def test_remove_summary(test_app_with_db):
+def test_remove_summary(test_app_with_db, monkeypatch):
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
     response = test_app_with_db.post("/summaries/", json={"url": "https://foo.bar"})
     summary_id = response.json()["id"]
 
@@ -104,7 +118,9 @@ def test_remove_summary_incorrect_id(test_app_with_db):
     }
 
 
-def test_update_summary(test_app_with_db):
+def test_update_summary(test_app_with_db, monkeypatch):
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
     response = test_app_with_db.post("/summaries/", json={"url": "https://foo.bar"})
     summary_id = response.json()["id"]
 

@@ -18,6 +18,18 @@ fastapi-tdd-docker course from testdriven.io
 
 `docker-compose logs --follow --timestamps web`
 
+# apply database migrations
+
+`docker-compose exec web aerich upgrade`
+
+# generate schemas in final state (no migrations)
+
+`docker-compose exec web python app/db.py`
+
+# access database
+
+`docker-compose exec web-db psql -U postgres`
+
 # run test with coverage
 
 `docker-compose exec web python -m pytest --cov="."`
