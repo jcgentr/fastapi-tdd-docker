@@ -97,7 +97,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, test]
     env:
-      HEROKU_APP_NAME: guarded-eyrie-00742
+      HEROKU_APP_NAME: nameless-scrubland-53499
       HEROKU_REGISTRY_IMAGE: registry.heroku.com/${HEROKU_APP_NAME}/summarizer
     steps:
       - name: Checkout
@@ -105,24 +105,16 @@ jobs:
         with:
           ref: main
       - name: Log in to GitHub Packages
-        run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin docker.pkg.github.com
+        run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin ghcr.io
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Pull images
+      - name: Pull image
         run: |
-          docker pull ${{ env.IMAGE }}-builder:latest || true
-          docker pull ${{ env.IMAGE }}-final:latest || true
-      - name: Build images
+          docker pull ${{ env.IMAGE }}:latest || true
+      - name: Build image
         run: |
           docker build \
-            --target builder \
-            --cache-from ${{ env.IMAGE }}-builder:latest \
-            --tag ${{ env.IMAGE }}-builder:latest \
-            --file ./project/Dockerfile.prod \
-            "./project"
-          docker build \
-            --cache-from ${{ env.IMAGE }}-final:latest \
-            --tag ${{ env.IMAGE }}:latest \
+            --cache-from ${{ env.IMAGE }}:latest \
             --tag ${{ env.HEROKU_REGISTRY_IMAGE }}:latest \
             --file ./project/Dockerfile.prod \
             "./project"
@@ -131,7 +123,7 @@ jobs:
         env:
           HEROKU_AUTH_TOKEN: ${{ secrets.HEROKU_AUTH_TOKEN }}
       - name: Push to the registry
-        run: docker push ${{ env.HEROKU_REGISTRY_IMAGE }}:latest
+        run: docker push ${{ env.HEROKU_REGISTRY_IMAGE }}
       - name: Set environment variables
         run: |
           echo "HEROKU_REGISTRY_IMAGE=${{ env.HEROKU_REGISTRY_IMAGE }}" >> $GITHUB_ENV

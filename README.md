@@ -30,11 +30,15 @@ fastapi-tdd-docker course from testdriven.io
 
 `docker-compose exec web-db psql -U postgres`
 
-# run test with coverage
+# run tests
+
+`docker-compose exec web python -m pytest`
+
+## with coverage
 
 `docker-compose exec web python -m pytest --cov="."`
 
-## and output html
+## with coverage and output html
 
 `docker-compose exec web python -m pytest --cov="." --cov-report html`
 
